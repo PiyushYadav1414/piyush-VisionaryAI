@@ -1,4 +1,5 @@
 import React, { useState } from 'react'; // React and useState for state management
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate for navigation between pages
 
 // Importing assets, utility functions, and components
@@ -31,23 +32,30 @@ const CreatePost = () => {
     setForm({ ...form, prompt: randomPrompt }); // Update the prompt field in the form state
   };
 
+  
+  useEffect(() => {
+    console.log("Updated Form from generateImage:", form);
+  }, [form]);
+
+  
+
   // Function to generate the image based on the prompt
   const generateImage = async () => {
     if (form.prompt) { // Ensure a prompt is provided
       try {
         setGeneratingImg(true); // Start the loading spinner
-        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/dalle', {
+        const response = await fetch('http://localhost:8080/api/v1/dalle', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name:form.name,prompt: form.prompt }), // Send the prompt to the API
+          body: JSON.stringify({prompt: form.prompt }), // Send the prompt to the API
         });
 
         const data = await response.json(); // Get the generated image data
         console.log(data);
         // Directly use Cloudinary URL without Base64 conversion
-        setForm({ ...form, photo: data.photo }); 
+        setForm(prevForm => ({ ...prevForm, photo: data.photo }));
         console.log("Generated Image URL:", data.photo);
       } catch (err) {
         alert(err); // Show an error if something goes wrong
@@ -66,7 +74,8 @@ const CreatePost = () => {
     if (form.prompt && form.photo) { // Ensure both prompt and photo are provided
       setLoading(true); // Start the loading spinner
       try {
-        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/post', {
+        console.log("Form from handleSubmit",form);
+        const response = await fetch('http://localhost:8080/api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

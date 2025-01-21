@@ -1,7 +1,7 @@
 import express from 'express'; // Framework for building REST APIs
 import * as dotenv from 'dotenv'; // Loads environment variables from a .env file
-import { OpenAI } from 'openai'; // Correct OpenAI import for v4
-import cloudinary from 'cloudinary'; // For image upload (you need to install this)
+import { OpenAI } from 'openai'; // OpenAI API import for image generation
+import cloudinary from 'cloudinary'; // Cloudinary image upload
 import Post from '../models/post.js'; // Assuming you have a Post model defined
 
 // Configure dotenv to load environment variables
@@ -22,16 +22,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Define a GET route for the base URL of this router
+// Define a GET route for the base URL of this router (optional, for testing)
 router.get('/', (req, res) => {
-  // Sends a simple JSON response as a confirmation
   res.status(200).json({ message: 'Hello from DALL-E!' });
 });
 
-// Define a POST route for generating images with DALL-E and saving to MongoDB
+// Define a POST route for generating images with DALL-E and uploading to Cloudinary
 router.post('/', async (req, res) => {
   try {
-    const { name, prompt } = req.body; // Extract 'name' and 'prompt' from the request body
+    const { prompt } = req.body; // Extract 'name' and 'prompt' from the request body
 
     // Call OpenAI API to generate an image
     const image = await openai.images.generate({
@@ -40,29 +39,19 @@ router.post('/', async (req, res) => {
       size: '1024x1024',    // Dimensions of the generated image
     });
 
-    // Extract the generated image URL from the response
+    // Extract the generated image URL from the OpenAI response
     const imageUrl = image.data[0].url;
-    // console.log("Image url by openai:",imageUrl);
-    // Upload the image to Cloudinary
+    console.log("Image URL from OpenAI:", imageUrl);
+
+    // Upload the generated image to Cloudinary
     const cloudinaryResponse = await cloudinary.uploader.upload(imageUrl, { 
       folder: "generated_images"
     });
-    // console.log("Image url by cloudinary:",cloudinaryResponse.url);
+    console.log("Image URL from Cloudinary:", cloudinaryResponse.url);
 
-    // Create a new post in the MongoDB collection
-    const newPost = new Post({
-      name,                   // Name of the user
-      prompt,                 // Text prompt used for generating the image
-      photo: cloudinaryResponse.url,  // URL of the uploaded photo from Cloudinary
-    });
-
-    // Save the new post to MongoDB
-    await newPost.save();
-
-    // Send the generated image URL and confirmation response back to the client
+    // Send the generated image URL back to the frontend
     res.status(200).json({ photo: cloudinaryResponse.url });
   } catch (error) {
-    // Log the error and send an error response to the client
     console.error(error);
     res.status(500).send(
       error?.response?.data?.error?.message || 'Something went wrong'
@@ -70,5 +59,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Export the router to be used in the main server file
 export default router;

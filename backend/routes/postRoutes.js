@@ -36,22 +36,26 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, prompt, photo } = req.body; // Extract the name, prompt, and photo from the request body
-
+    console.log("photo from postRoutes",photo);
     // Upload the photo to Cloudinary
-    const photoUrl = await cloudinary.uploader.upload(photo);
+    // const photoUrl = await cloudinary.uploader.upload(photo);
 
     // Create a new post in the MongoDB collection
     const newPost = new Post({
       name,                   // Name of the user
       prompt,               // Text prompt used for generating the image
-      photo: photoUrl.url,  // URL of the uploaded photo from Cloudinary
+      photo: photo,  // URL of the uploaded photo from Cloudinary
     });
     
+    // Save the new post to the database
+    await newPost.save();
+
+    console.log("Saved post:", newPost);
 
     // Send the newly created post back to the client
     res.status(200).json({ success: true, data: newPost });
   } catch (err) {
-    // Handle any errors that occur
+    console.error("Error creating post:", err);
     res.status(500).json({ success: false, message: 'Unable to create a post, please try again' });
   }
 });
