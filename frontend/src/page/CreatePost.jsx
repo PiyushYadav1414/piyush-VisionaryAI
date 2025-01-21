@@ -41,7 +41,7 @@ const CreatePost = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ prompt: form.prompt }), // Send the prompt to the API
+          body: JSON.stringify({ name:form.name,prompt: form.prompt }), // Send the prompt to the API
         });
 
         const data = await response.json(); // Get the generated image data
