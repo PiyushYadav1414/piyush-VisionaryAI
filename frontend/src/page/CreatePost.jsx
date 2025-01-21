@@ -44,7 +44,7 @@ const CreatePost = () => {
     if (form.prompt) { // Ensure a prompt is provided
       try {
         setGeneratingImg(true); // Start the loading spinner
-        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/dalle', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const CreatePost = () => {
       setLoading(true); // Start the loading spinner
       try {
         console.log("Form from handleSubmit",form);
-        const response = await fetch('http://localhost:8080/api/v1/post', {
+        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
