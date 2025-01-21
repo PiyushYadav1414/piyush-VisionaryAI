@@ -36,7 +36,7 @@ const CreatePost = () => {
     if (form.prompt) { // Ensure a prompt is provided
       try {
         setGeneratingImg(true); // Start the loading spinner
-        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/dalle', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const CreatePost = () => {
     if (form.prompt && form.photo) { // Ensure both prompt and photo are provided
       setLoading(true); // Start the loading spinner
       try {
-        const response = await fetch('http://localhost:8080/api/v1/post', {
+        const response = await fetch('https://piyush-visionaryai.onrender.com/api/v1/post', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
