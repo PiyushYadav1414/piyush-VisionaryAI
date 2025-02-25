@@ -47,10 +47,10 @@ router.post('/', async (req, res) => {
     const cloudinaryResponse = await cloudinary.uploader.upload(imageUrl, { 
       folder: "generated_images"
     });
-    console.log("Image URL from Cloudinary:", cloudinaryResponse.url);
+    console.log("Image URL from Cloudinary:", cloudinaryResponse.secure_url);
 
     // Send the generated image URL back to the frontend
-    res.status(200).json({ photo: cloudinaryResponse.url });
+    res.status(200).json({ photo: cloudinaryResponse.secure_url });
   } catch (error) {
     console.error(error);
     res.status(500).send(
