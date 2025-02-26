@@ -76,8 +76,8 @@ const Home = () => {
       setTimeout(() => {
         // Filter posts based on the search text (case-insensitive search for name or prompt)
         const searchResult = allPosts.filter((item) => 
-          item.name.toLowerCase().includes(searchText.toLowerCase()) || 
-          item.prompt.toLowerCase().includes(searchText.toLowerCase())
+          item.name?.toLowerCase().includes(searchText.toLowerCase()) || 
+          item.prompt?.toLowerCase().includes(searchText.toLowerCase())
         );
         setSearchedResults(searchResult); // Update the search results state
       }, 500),
